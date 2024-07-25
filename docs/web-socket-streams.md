@@ -7,9 +7,9 @@ layout: default
 
 
 
-# Web Socket Streams for coins (2024-05-17)
+# Web Socket Streams for Coins Futures (2024-08-31)
 # General WSS information
-* The base endpoint is: **wsapi.coins.xyz**
+* The base endpoint is: **ws-fapi.coins.xyz**
 * Streams can be accessed either in a single raw stream or in a combined stream
 * Raw streams are accessed at **/openapi/quote/ws/v3/\<streamName\>**
 * Combined streams are accessed at **/openapi/quote/stream?streams=\<streamName1\>/\<streamName2\>/\<streamName3\>**
@@ -131,7 +131,7 @@ The Aggregate Trade Streams push trade information that is aggregated for a sing
 {
   "e": "aggTrade",  // Event type
   "E": 123456789,   // Event time
-  "s": "BNBBTC",    // Symbol
+  "s": "BTCUSDT",    // Symbol
   "a": 12345,       // Aggregate trade ID
   "p": "0.001",     // Price
   "q": "100",       // Quantity
@@ -155,7 +155,7 @@ The Trade Streams push raw trade information; each trade has a unique buyer and 
 {
   "e": "trade",     // Event type
   "E": 123456789,   // Event time
-  "s": "BNBBTC",    // Symbol
+  "s": "BTCUSDT",    // Symbol
   "t": 12345,       // Trade ID
   "p": "0.001",     // Price
   "q": "100",       // Quantity
@@ -199,11 +199,11 @@ m -> minutes; h -> hours; d -> days; w -> weeks; M -> months
 {
   "e": "kline",     // Event type
   "E": 123456789,   // Event time
-  "s": "BNBBTC",    // Symbol
+  "s": "BTCUSDT",    // Symbol
   "k": {
     "t": 123400000, // Kline start time
     "T": 123460000, // Kline close time
-    "s": "BNBBTC",  // Symbol
+    "s": "BTCUSDT",  // Symbol
     "i": "1m",      // Interval
     "f": 100,       // First trade ID
     "L": 200,       // Last trade ID
@@ -235,7 +235,7 @@ for example: startTime = (System.currentTimeMillis() - 24 * 60 * 60 * 1000) / (6
   {
     "e": "24hrMiniTicker",  // Event type
     "E": 123456789,         // Event time
-    "s": "BNBBTC",          // Symbol
+    "s": "BTCUSDT",         // Symbol
     "c": "0.0025",          // Close price
     "o": "0.0010",          // Open price
     "h": "0.0025",          // High price
@@ -277,7 +277,7 @@ for example: startTime = (System.currentTimeMillis() - 24 * 60 * 60 * 1000) / (6
 {
   "e": "24hrTicker",  // Event type
   "E": 123456789,     // Event time
-  "s": "BNBBTC",      // Symbol
+  "s": "BTCUSDT",      // Symbol
   "p": "0.0015",      // Price change
   "P": "250.00",      // Price change percent
   "w": "0.0018",      // Weighted average price
@@ -330,7 +330,7 @@ Pushes any update to the best bid or ask's price or quantity in real-time for a 
 ```javascript
 {
   "u":400900217,     // order book updateId
-  "s":"BNBUSDT",     // symbol
+  "s":"BTCUSDT",     // symbol
   "b":"25.35190000", // best bid price
   "B":"31.21000000", // best bid qty
   "a":"25.36520000", // best ask price
@@ -362,7 +362,7 @@ Top **\<levels\>** bids and asks, pushed every second. Valid **\<levels\>** are 
 **Payload:**
 ```javascript
 {
-  "s": "XRPUSD",         //symbol
+  "s": "BTCUSDT",         //symbol
   "e": "depth",          //eventType
   "E": 1665484484791,    //eventTime
   "lastUpdateId": 160,  // Last update ID
@@ -393,7 +393,7 @@ Order book price and quantity depth updates used to locally manage an order book
 {
   "e": "depthUpdate", // Event type
   "E": 123456789,     // Event time
-  "s": "BNBBTC",      // Symbol
+  "s": "BTCUSDT",      // Symbol
   "U": 157,           // First update ID in event
   "u": 160,           // Final update ID in event
   "b": [              // Bids to be updated
@@ -411,10 +411,62 @@ Order book price and quantity depth updates used to locally manage an order book
 }
 ```
 
+## Mark Price Stream
+Mark price update stream.
+
+**Stream Name:** \<symbol>@markPrice@1s
+
+**Update Speed:** 1000ms
+
+**Payload:**
+```javascript
+{
+    "e":"markPriceUpdate",  // Event type
+    "E":1596095725000,      // Event time
+    "s":"BTCUSDT",    // Symbol
+    "p":"10934.62615417",   // Mark Price
+    "i":"10933.62615417",   // Index Price 
+    "r":"",                 // funding rate for perpetual symbol, "" will be shown for delivery symbol
+    "T":0                   // next funding time for perpetual symbol, 0 will be shown for delivery symbol
+}
+```
+
+## Mark Price of All Symbols of a Pair
+Mark price of all symbols of a pair.
+
+**Stream Name:** \!markPrice@arr
+
+**Update Speed:** 3000ms
+
+**Payload:**
+```javascript
+[ 
+  {
+    "e":"markPriceUpdate",  // Event type
+    "E":1596095725000,      // Event time
+    "s":"BTCUSDT",    // Symbol
+    "p":"10934.62615417",   // Mark Price
+    "i":"10933.62615417",   // Index Price 
+    "r":"",                 // funding rate for perpetual symbol, "" will be shown for delivery symbol
+    "T":0                   // next funding time for perpetual symbol, 0 will be shown for delivery symbol
+  },
+  {
+    "e":"markPriceUpdate",
+    "E":1596095725000,
+    "s":"BTCUSDT",
+    "p":"11012.31359011",
+    "P":"10962.17178236",
+    "i":"10933.62615417",   // Index Price 
+    "r":"0.00000000",
+    "T":1596096000000
+  }
+]
+```
+
 ## How to manage a local order book correctly
-1. Open a stream to **wsapi.coins.xyz/openapi/quote/ws/stream?streams=ethbusd@depth**.
+1. Open a stream to **ws-fapi.coins.xyz/openapi/quote/ws/stream?streams=ethbusd@depth**.
 2. Buffer the events you receive from the stream.
-3. Get a depth snapshot from **https://api.coins.xyz/openapi/quote/v1/depth?symbol=ETHBUSD** .
+3. Get a depth snapshot from **https://fapi.coins.xyz/openapi/quote/v1/depth?symbol=ETHBUSD** .
 4. Drop any event where `u` is <= `lastUpdateId` in the snapshot.
 5. The first processed event should have `U` <= `lastUpdateId`+1 **AND** `u` >= `lastUpdateId`+1.
 6. While listening to the stream, each new event's `U` should be equal to the previous event's `u`+1.

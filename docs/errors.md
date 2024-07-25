@@ -5,7 +5,7 @@ layout: default
 nav: sidebar/errors.html
 
 ---
-# Error codes for Coins (2024-05-17)
+# Error codes for Coins Futures (2024-08-31)
 
 Errors consist of two parts: an error code and a message. Codes are universal,
  but messages can vary. Here is the error JSON payload:

@@ -7,11 +7,11 @@ nav: sidebar/rest-api.html
 ---
 
 
-# Public Rest API for Coins (2024-05-17)
+# Public Rest API for Coins Futures (2024-08-31)
 
 ## General API Information
 
-* The base endpoint is: **https://api.coins.xyz**
+* The base endpoint is: **https://fapi.coins.xyz**
 * All endpoints return data in either a JSON object or array format.
 * Data is returned in **ascending** order, with the oldest records appearing first and the newest records appearing last.
 * All time and timestamp related fields are expressed in milliseconds.
@@ -677,79 +677,414 @@ Current exchange trading rules and symbol information
 
 ```json
 {
-  "timezone": "UTC",
-  "serverTime": 1538323200000,
-  "exchangeFilters": [],
-  "symbols": [
-    {
-      "symbol": "ETHBTC",
-      "status": "TRADING",
-      "baseAsset": "ETH",
-      "baseAssetPrecision": 8,
-      "quoteAsset": "BTC",
-      "quoteAssetPrecision": 8,
-      "orderTypes": [
-        "LIMIT",
-        "MARKET",
-        "LIMIT_MAKER",
-        "STOP_LOSS_LIMIT",
-        "STOP_LOSS",
-        "TAKE_PROFIT_LIMIT",
-        "TAKE_PROFIT"
-      ],
-      "filters": [
+    "timezone": "UTC",
+    "serverTime": "1718958414231",
+    "exchangeFilters": [],
+    "symbols": [
         {
-          "filterType": "PRICE_FILTER",
-          "minPrice": "0.00000100",
-          "maxPrice": "100000.00000000",
-          "tickSize": "0.00000100"
+            "symbol": "ETCUSDT",
+            "status": "trading",
+            "baseAsset": "ETC",
+            "quoteAsset": "USDT",
+            "orderTypes": [
+                "LIMIT",
+                "MARKET",
+                "STOP",
+                "TAKE_PROFIT",
+                "STOP_MARKET",
+                "TAKE_PROFIT_MARKET"
+            ],
+            "filters": []
         },
         {
-          "filterType": "LOT_SIZE",
-          "minQty": "0.00100000",
-          "maxQty": "100000.00000000",
-          "stepSize": "0.00100000"
+            "symbol": "AXSUSDT",
+            "status": "trading",
+            "baseAsset": "AXS",
+            "quoteAsset": "USDT",
+            "orderTypes": [
+                "LIMIT",
+                "MARKET",
+                "STOP",
+                "TAKE_PROFIT",
+                "STOP_MARKET",
+                "TAKE_PROFIT_MARKET"
+            ],
+            "filters": []
         },
         {
-          "filterType": "NOTIONAL",
-          "minNotional": "0.00100000"
+            "symbol": "BCHUSDT",
+            "status": "trading",
+            "baseAsset": "BCH",
+            "quoteAsset": "USDT",
+            "orderTypes": [
+                "LIMIT",
+                "MARKET",
+                "STOP",
+                "TAKE_PROFIT",
+                "STOP_MARKET",
+                "TAKE_PROFIT_MARKET"
+            ],
+            "filters": []
         },
         {
-          "filterType": "MIN_NOTIONAL",
-          "minNotional": "0.00100000"
+            "symbol": "TESUSDT",
+            "status": "trading",
+            "baseAsset": "TES",
+            "quoteAsset": "USDT",
+            "orderTypes": [
+                "LIMIT",
+                "MARKET",
+                "STOP",
+                "TAKE_PROFIT",
+                "STOP_MARKET",
+                "TAKE_PROFIT_MARKET"
+            ],
+            "filters": []
         },
         {
-          "filterType": "MAX_NUM_ORDERS",
-          "maxNumOrders": 200
-        },
-        {
-          "filterType": "MAX_NUM_ALGO_ORDERS",
-          "maxNumAlgoOrders": 5
+            "symbol": "BTCUSDT",
+            "status": "trading",
+            "baseAsset": "BTC",
+            "quoteAsset": "USDT",
+            "orderTypes": [
+                "LIMIT",
+                "MARKET",
+                "STOP",
+                "TAKE_PROFIT",
+                "STOP_MARKET",
+                "TAKE_PROFIT_MARKET"
+            ],
+            "filters": []
         }
-      ]
-    }
-  ]
+    ]
 }
 ```
 
 
 
-### Wallet endpoints
+### Futures Trading Endpoints
 
-#### All Coins' Information (USER_DATA)
+#### Test new order (TRADE)
 
 ```shell
-GET /openapi/wallet/v1/config/getall  (HMAC SHA256)
+POST /openapi/v1/order/test (HMAC SHA256)
 ```
 
-Get information of coins (available for deposit and withdraw) for user.
+Test new order creation and signature/recvWindow long.
+Creates and validates a new order but does not send it into the matching engine.
 
-**Weight(IP):** 10
+**Weight:** 1
+
+**Parameters:**
+
+Same as `POST /openapi/v1/order`
+
+**Response:**
+
+```javascript
+{}
+```
+
+
+
+#### New order (TRADE)
+
+```shell
+POST /openapi/v1/order  (HMAC SHA256)
+```
+
+Send in a new order.
+
+**Weight:** 1
 
 **Parameters:**
 
 Name | Type | Mandatory | Description
 ------------ | ------------ | ------------ | ------------
+newClientOrderId | STRING | NO | A unique id among open orders. Automatically generated if not sent. Orders with the same `newClientOrderID` can be accepted only when the previous one is filled, otherwise the order will be rejected.
+symbol | STRING | YES |
+side | ENUM | YES | `BUY` or `SELL`.
+isolated | STRING | NO | `true` or `false`, default `false`.
+type | ENUM | YES | `LIMIT`, `MARKET`, `STOP`, `TAKE_PROFIT`, `STOP_MARKET`, `TAKE_PROFIT_MARKET`.
+timeInForce | ENUM | NO | `GTC`, `FOK`, `IOC`, `POST_ONLY`, default `GTC`.
+quantity | DECIMAL | NO | Cannot be sent with `closePosition=true`(Close-All).
+price | DECIMAL | NO |
+stopPrice | DECIMAL | NO | Used with `STOP/STOP_MARKET` or `TAKE_PROFIT/TAKE_PROFIT_MARKET` orders.
+closePosition | STRING | NO | `true` or `false`. Close-All, used with `STOP_MARKET` or `TAKE_PROFIT_MARKET`.
+reduceOnly | STRING | NO | `true` or `false`, default `false`. Cannot be sent with `closePosition=true`.
+workingType | ENUM | NO | stopPrice triggered by: `MARK_PRICE` or `LAST_PRICE`, default `LAST_PRICE`.
+newOrderRespType | ENUM | NO | `ACK` or `RESULT`, default `ACK`.
+recvWindow | LONG | NO |
+timestamp | LONG | YES |
+
+Additional mandatory parameters based on `type`:
+
+Type | Additional mandatory parameters
+------------ |--------------------------------------------------
+`LIMIT` | `timeInForce`, `quantity`, `price`
+`MARKET` | `quantity`                   
+`STOP/TAKE_PROFIT` | `quantity`, `price`, `stopPrice`      
+`STOP_MARKET/TAKE_PROFIT_MARKET` | `stopPrice`
+
+- Order with type `STOP`, parameter timeInForce can be sent ( default `GTC`).
+- Order with type `TAKE_PROFIT`, parameter `timeInForce` can be sent ( default `GTC`).
+- Condition orders will be triggered when:
+     - `STOP`, `STOP_MARKET`:
+       - BUY: latest price ("MARK_PRICE" or "CONTRACT_PRICE") >= `stopPrice`
+       - SELL: latest price ("MARK_PRICE" or "CONTRACT_PRICE") <= `stopPrice`
+     - `TAKE_PROFIT`, `TAKE_PROFIT_MARKET`:
+       - BUY: latest price ("MARK_PRICE" or "CONTRACT_PRICE") <= `stopPrice`
+       - SELL: latest price ("MARK_PRICE" or "CONTRACT_PRICE") >= `stopPrice`
+- If `newOrderRespType` is sent as `RESULT` :
+     - `MARKET` order: the final FILLED result of the order will be return directly.
+     - `LIMIT` order with special `timeInForce`: the final status result of the order(FILLED or EXPIRED) will be returned directly.
+- `STOP_MARKET`, `TAKE_PROFIT_MARKET` with `closePosition=true` :
+     - Follow the same rules for condition orders.
+     - If triggered，close all current long position( if `SELL`) or current short position( if `BUY`).
+     - Cannot be used with `quantity` paremeter
+     - Cannot be used with `reduceOnly` parameter
+
+**Response:**
+
+```javascript
+{
+    "orderId": "1700637405558629632",
+    "clientOrderId": "109f8db5327446e1a0507b2ac4dabfc1",
+    "symbol": "BTCUSDT",
+    "type": "LIMIT",
+    "positionSide": "BOTH",
+    "timeInForce": "GTC",
+    "side": "BUY",
+    "isolated": false,
+    "origQty": "1.000000",
+    "price": "100.000000",
+    "executedQty": "0.000000",
+    "activatePrice": null,
+    "priceRate": null,
+    "triggerPrice": "0.000000",
+    "triggerType": "LAST_PRICE",
+    "tpTriggerType": "LAST_PRICE",
+    "tpTriggerPrice": "",
+    "slTriggerType": "LAST_PRICE",
+    "slTriggerPrice": "",
+    "strategyParentId": "0",
+    "status": "NEW"
+}
+```
+
+
+
+#### Place Multiple Orders (TRADE)
+
+```shell
+POST /openapi/v1/batchOrders  (HMAC SHA256)
+```
+
+**Weight:** 1
+
+**Parameters:**
+
+Name | Type | Mandatory | Description
+------------ | ------------ | ------------ | ------------
+batchOrders | LIST<JSON> | YES | order list. Max 5 orders
+recvWindow | LONG | NO |
+timestamp | LONG | YES |
+
+Where batchOrders is the list of order parameters in JSON
+- Example: /openapi/v1/batchOrders?batchOrders=[{"type":"LIMIT","timeInForce":"GTC","symbol":"BTCUSDT","side":"BUY","price":"10001","quantity":"0.001"}]
+
+Name | Type | Mandatory | Description
+------------ | ------------ | ------------ | ------------
+newClientOrderId | STRING | NO | A unique id among open orders. Automatically generated if not sent. Orders with the same `newClientOrderID` can be accepted only when the previous one is filled, otherwise the order will be rejected.
+symbol | STRING | YES |
+side | ENUM | YES | `BUY` or `SELL`.
+isolated | STRING | NO | `true` or `false`, default `false`.
+type | ENUM | YES | `LIMIT`, `MARKET`, `STOP`, `TAKE_PROFIT`, `STOP_MARKET`, `TAKE_PROFIT_MARKET`.
+timeInForce | ENUM | NO | `GTC`, `FOK`, `IOC`, `POST_ONLY`, default `GTC`.
+quantity | DECIMAL | NO | Cannot be sent with `closePosition=true`(Close-All).
+price | DECIMAL | NO |
+stopPrice | DECIMAL | NO | Used with `STOP/STOP_MARKET` or `TAKE_PROFIT/TAKE_PROFIT_MARKET` orders.
+closePosition | STRING | NO | `true` or `false`. Close-All, used with `STOP_MARKET` or `TAKE_PROFIT_MARKET`.
+reduceOnly | STRING | NO | `true` or `false`, default `false`. Cannot be sent with `closePosition=true`.
+workingType | ENUM | NO | stopPrice triggered by: `MARK_PRICE` or `LAST_PRICE`, default `LAST_PRICE`.
+newOrderRespType | ENUM | NO | `ACK` or `RESULT`, default `ACK`.
+
+- Paremeter rules are same with `New Order`.
+- Batch orders are processed concurrently, and the order of matching is not guaranteed.
+- The order of returned contents for batch orders is the same as the order of the order list.
+
+**Response:**
+
+```javascript
+[
+  {
+    "orderId": "1700637405558629632",
+    "clientOrderId": "109f8db5327446e1a0507b2ac4dabfc1",
+    "symbol": "BTCUSDT",
+    "type": "LIMIT",
+    "positionSide": "BOTH",
+    "timeInForce": "GTC",
+    "side": "BUY",
+    "isolated": false,
+    "origQty": "1.000000",
+    "price": "100.000000",
+    "executedQty": "0.000000",
+    "activatePrice": null,
+    "priceRate": null,
+    "triggerPrice": "0.000000",
+    "triggerType": "LAST_PRICE",
+    "tpTriggerType": "LAST_PRICE",
+    "tpTriggerPrice": "",
+    "slTriggerType": "LAST_PRICE",
+    "slTriggerPrice": "",
+    "strategyParentId": "0",
+    "status": "NEW"
+  }
+]
+```
+
+
+
+#### Query Order (USER_DATA)
+
+```shell
+GET /openapi/v1/order  (HMAC SHA256)
+```
+
+Check an order's status.
+
+**Weight:** 1
+
+- These orders will not be found :
+     - order status is CANCELED or EXPIRED AND order has NO filled trade AND created time + 3 days < current time
+     - order create time + 90 days < current time
+
+**Parameters:**
+
+Name | Type | Mandatory | Description
+------------ | ------------ | ------------ | ------------
+symbol | STRING | YES |
+orderId | LONG | NO |
+origClientOrderId | STRING | NO |
+recvWindow | LONG | NO |
+timestamp | LONG | YES |
+
+Notes:
+- Either `orderId` or `origClientOrderId` must be sent. If both parameters are sent, `orderId` takes precedence.
+
+**Response:**
+
+```javascript
+{
+    "userId": null,
+    "clientOrderId": "109f8db5327446e1a0507b2ac4dabfc1",
+    "orderId": "1700637405558629632",
+    "symbolId": "BTCUSDT",
+    "baseToken": "BTC",
+    "quoteToken": "USDT",
+    "settleToken": "USDT",
+    "oriType": "LIMIT",
+    "orderType": "LIMIT",
+    "positionSide": "BOTH",
+    "isolated": false,
+    "side": "BUY",
+    "timeInForce": "GTC",
+    "price": "100",
+    "quantity": "1",
+    "closePosition": false,
+    "reduceOnly": false,
+    "executedQuantity": "0",
+    "executedAmount": "0",
+    "lastPriceAtPlace": "0",
+    "markPriceAtPlace": "68925.239999",
+    "triggerType": 0,
+    "triggerPrice": "0",
+    "triggeredTime": 0,
+    "makerFeeRate": "0.0002",
+    "takerFeeRate": "0.0005",
+    "rejectReason": null,
+    "cancelQty": "0",
+    "cancelAmount": "0",
+    "strategyParentId": 0,
+    "tpTriggerType": 0,
+    "tpTriggerPrice": "0",
+    "slTriggerType": 0,
+    "slTriggerPrice": "0",
+    "status": "NEW",
+    "createdAt": 1717467776592,
+    "updatedAt": 1717467777024,
+    "fillPercent": "0",
+    "avgPrice": "0"
+}
+```
+
+
+
+#### Cancel Order (TRADE)
+
+```shell
+DELETE /openapi/v1/order  (HMAC SHA256)
+```
+
+Cancel an active order.
+
+**Weight:** 1
+
+**Parameters:**
+
+Name | Type | Mandatory | Description
+------------ | ------------ | ------------ | ------------
+symbol | STRING | YES |
+orderId | LONG | NO |
+origClientOrderId | STRING | NO |
+recvWindow | LONG | NO |
+timestamp | LONG | YES |
+
+- Either `orderId` or `origClientOrderId` must be sent. If both parameters are sent, `orderId` takes precedence.
+
+**Response:**
+
+```javascript
+{
+    "orderId": "1700637405558629632",
+    "clientOrderId": "109f8db5327446e1a0507b2ac4dabfc1",
+    "symbol": "BTCUSDT",
+    "type": "LIMIT",
+    "positionSide": "BOTH",
+    "timeInForce": "GTC",
+    "side": "BUY",
+    "isolated": false,
+    "origQty": "1.000000",
+    "price": "100.000000",
+    "executedQty": "0.000000",
+    "activatePrice": null,
+    "priceRate": null,
+    "triggerPrice": "0.000000",
+    "triggerType": "LAST_PRICE",
+    "tpTriggerType": "LAST_PRICE",
+    "tpTriggerPrice": "",
+    "slTriggerType": "LAST_PRICE",
+    "slTriggerPrice": "",
+    "strategyParentId": "0",
+    "status": "NEW"
+}
+```
+
+
+
+#### Cancel All Open Orders (TRADE)
+
+```shell
+DELETE /openapi/v1/allOpenOrders  (HMAC SHA256)
+```
+
+**Weight:** 1
+
+**Parameters:**
+
+Name | Type | Mandatory | Description
+------------ | ------------ | ------------ | ------------
+symbol | STRING | YES |
 recvWindow | LONG | NO |
 timestamp | LONG | YES |
 
@@ -757,234 +1092,554 @@ timestamp | LONG | YES |
 
 ```javascript
 [
-    {
-        "coin": "ETH",
-        "name": "ETH",
-        "depositAllEnable": true,
-        "withdrawAllEnable": true,
-        "free": "1.9144",
-        "locked": "0.0426",
-        "networkList": [
-            {
-                "addressRegex": "0x([0-9a-fA-F]){40}",
-                "memoRegex": "^[0-9A-Za-z\\-_]{1,120}$",
-                "network": "ETH",
-                "name": "ERC20",
-                "depositEnable": true,
-                "minConfirm": 8,
-                "unLockConfirm": 12,
-                "withdrawDesc": "1234567890",
-                "withdrawEnable": true,
-                "withdrawFee": "0",
-                "withdrawIntegerMultiple": "0.00000001",
-                "withdrawMax": "1",
-                "withdrawMin": "0.001",
-                "sameAddress": false
-            }
-        ],
-        "legalMoney": false
-    }
-  ]
+  {
+    "orderId": "1700637405558629632",
+    "clientOrderId": "109f8db5327446e1a0507b2ac4dabfc1",
+    "symbol": "BTCUSDT",
+    "type": "LIMIT",
+    "positionSide": "BOTH",
+    "timeInForce": "GTC",
+    "side": "BUY",
+    "isolated": false,
+    "origQty": "1.000000",
+    "price": "100.000000",
+    "executedQty": "0.000000",
+    "activatePrice": null,
+    "priceRate": null,
+    "triggerPrice": "0.000000",
+    "triggerType": "LAST_PRICE",
+    "tpTriggerType": "LAST_PRICE",
+    "tpTriggerPrice": "",
+    "slTriggerType": "LAST_PRICE",
+    "slTriggerPrice": "",
+    "strategyParentId": "0",
+    "status": "NEW"
+  }
+]
 ```
 
 
 
-#### Deposit Address (USER_DATA)
+#### Cancel Multiple Orders (TRADE)
 
 ```shell
-GET /openapi/wallet/v1/deposit/address  (HMAC SHA256)
+DELETE /openapi/v1/batchOrders  (HMAC SHA256)
 ```
 
-Fetch deposit address with network.
-
-**Weight(IP):** 10
+**Weight:** 1
 
 **Parameters:**
 
 Name | Type | Mandatory | Description
 ------------ | ------------ | ------------ | ------------
-coin | STRING | YES |
-network | STRING | YES |
+symbol | STRING | YES |
+orderIdList | `LIST<LONG>` | NO | max length 10, e.g. [1234567,2345678].
+origClientOrderIdList | `LIST<STRING>` | NO | max length 10, e.g. ["my_id_1","my_id_2"], encode the double quotes. No space after comma.
 recvWindow | LONG | NO |
 timestamp | LONG | YES |
 
-**Response:**
-
-```javascript
-{
-    "coin": "ETH",
-    "address": "0xfe98628173830bf79c59f04585ce41f7de168784",
-    "addressTag": ""
-}
-```
-
-
-
-#### Withdraw(USER_DATA)
-
-```shell
-POST /openapi/wallet/v1/withdraw/apply  (HMAC SHA256)
-```
-
-Submit a withdraw request.
-
-**Weight(UID):** 100
-
-**Parameters:**
-
-| Name            | Type    | Mandatory | Description                                              |
-| --------------- | ------- | --------- | -------------------------------------------------------- |
-| coin            | STRING  | YES       |                                                          |
-| network         | STRING  | YES       |                                                          |
-| address         | STRING  | YES       |                                                          |
-| addressTag      | STRING  | NO        | Secondary address identifier for coins like XRP,XMR etc. |
-| amount          | DECIMAL | YES       |                                                          |
-| withdrawOrderId | STRING  | NO        | client id for withdraw, length is limited to 64.         |
-| recvWindow      | LONG    | NO        |                                                          |
-| timestamp       | LONG    | YES       |                                                          |
-
-* Please notice `coin`/`network`/`address`/`addressTag` combination **MUST** be in withdraw address whitelist, it is needed to setup the withdraw address whitelist before doing this api call.
-
-**Response:**
-
-```javascript
-{
-  "id":"459165282044051456"
-}
-```
-
-
-
-#### Deposit History (USER_DATA)
-
-```shell
-GET /openapi/wallet/v1/deposit/history  (HMAC SHA256)
-```
-
-Fetch deposit history.
-
-**Weight(IP):** 2
-
-**Parameters:**
-
-| Name       | Type   | Mandatory | Description                                                  |
-| ---------- | ------ | --------- | ------------------------------------------------------------ |
-| coin       | STRING | NO        |                                                              |
-| txId       | STRING | NO        |                                                              |
-| status     | INT    | NO        | 0-PROCESSING, 1-SUCCESS, 2-FAILED, 3-NEED_FILL_DATA(travel rule info) |
-| startTime  | LONG   | NO        | Default: 90 days from current timestamp                      |
-| endTime    | LONG   | NO        | Default: present timestamp                                   |
-| offset     | INT    | NO        | Default:0                                                    |
-| limit      | LONG   | NO        | Default:1000, Max:1000                                       |
-| recvWindow | LONG   | NO        |                                                              |
-| timestamp  | LONG   | YES       |                                                              |
-
-* Please notice the default `startTime` and `endTime` to make sure that time interval is within 0-90 days.
-
-* If both `startTime` and `endTime` are sent, time between `startTime` and `endTime` must be less than 90 days.
-
+- Either `orderIdList` or `origClientOrderIdList` must be sent. If both parameters are sent, `orderIdList` takes precedence.
 
 **Response:**
 
 ```javascript
 [
+  {
+    "orderId": "1700637405558629632",
+    "clientOrderId": "109f8db5327446e1a0507b2ac4dabfc1",
+    "symbol": "BTCUSDT",
+    "type": "LIMIT",
+    "positionSide": "BOTH",
+    "timeInForce": "GTC",
+    "side": "BUY",
+    "isolated": false,
+    "origQty": "1.000000",
+    "price": "100.000000",
+    "executedQty": "0.000000",
+    "activatePrice": null,
+    "priceRate": null,
+    "triggerPrice": "0.000000",
+    "triggerType": "LAST_PRICE",
+    "tpTriggerType": "LAST_PRICE",
+    "tpTriggerPrice": "",
+    "slTriggerType": "LAST_PRICE",
+    "slTriggerPrice": "",
+    "strategyParentId": "0",
+    "status": "NEW"
+  }
+]
+```
+
+
+
+#### New Futures Account Transfer (USER_DATA)
+
+```shell
+POST /openapi/v1/transfer (HMAC SHA256)
+```
+
+Execute transfer between spot account and futures account.
+
+**Weight:** 1
+
+**Parameters:**
+
+Name | Type | Mandatory | Description
+------------ | ------------ | ------------ | ------------
+asset | STRING | YES | The asset being transferred, e.g., USDT.
+amount | DECIMAL | YES | The amount to be transferred.
+type | INT | YES | 1: transfer from spot account to USDT-Ⓜ futures account, 2: transfer from USDT-Ⓜ futures account to spot account.
+recvWindow | LONG | NO |
+timestamp | LONG | YES |
+
+- You need to open Enable Futures permission for the API Key which requests this endpoint.
+  
+**Response:**
+
+```javascript
+{
+    "tranId": 100000001    //transaction id
+}
+```
+
+
+
+#### Query Current Open Order (USER_DATA)
+
+```shell
+GET /openapi/v1/openOrder (HMAC SHA256)
+```
+
+**Weight:** 1
+
+**Parameters:**
+
+Name | Type | Mandatory | Description
+------------ | ------------ | ------------ | ------------
+symbol | STRING | YES |
+orderId | LONG | NO |
+origClientOrderId | STRING | NO |
+recvWindow | LONG | NO |
+timestamp | LONG | YES |
+
+- Either `orderId` or `origClientOrderId` must be sent. If both parameters are sent, `orderId` takes precedence.
+- If the queried order has been filled or cancelled, the error message "Order does not exist" will be returned.
+  
+**Response:**
+
+```javascript
+{
+    "userId": null,
+    "clientOrderId": "109f8db5327446e1a0507b2ac4dabfc1",
+    "orderId": "1700637405558629632",
+    "symbolId": "BTCUSDT",
+    "baseToken": "BTC",
+    "quoteToken": "USDT",
+    "settleToken": "USDT",
+    "oriType": "LIMIT",
+    "orderType": "LIMIT",
+    "positionSide": "BOTH",
+    "isolated": false,
+    "side": "BUY",
+    "timeInForce": "GTC",
+    "price": "100",
+    "quantity": "1",
+    "closePosition": false,
+    "reduceOnly": false,
+    "executedQuantity": "0",
+    "executedAmount": "0",
+    "lastPriceAtPlace": "0",
+    "markPriceAtPlace": "68925.239999",
+    "triggerType": 0,
+    "triggerPrice": "0",
+    "triggeredTime": 0,
+    "makerFeeRate": "0.0002",
+    "takerFeeRate": "0.0005",
+    "rejectReason": null,
+    "cancelQty": "0",
+    "cancelAmount": "0",
+    "strategyParentId": 0,
+    "tpTriggerType": 0,
+    "tpTriggerPrice": "0",
+    "slTriggerType": 0,
+    "slTriggerPrice": "0",
+    "status": "NEW",
+    "createdAt": 1717467776592,
+    "updatedAt": 1717467777024,
+    "fillPercent": "0",
+    "avgPrice": "0"
+}
+```
+
+
+
+#### Current All Open Orders (USER_DATA)
+
+```shell
+GET /openapi/v1/openOrders (HMAC SHA256)
+```
+
+Get all open orders on a symbol. Careful when accessing this with no symbol.
+
+**Weight:** 1 for a single symbol; 40 when the symbol parameter is omitted
+
+**Parameters:**
+
+Name | Type | Mandatory | Description
+------------ | ------------ | ------------ | ------------
+symbol | STRING | NO |
+recvWindow | LONG | NO |
+timestamp | LONG | YES |
+
+- If the symbol is not sent, orders for all symbols will be returned in an array.
+  
+**Response:**
+
+```javascript
+[
+  {
+    "userId": null,
+    "clientOrderId": "109f8db5327446e1a0507b2ac4dabfc1",
+    "orderId": "1700637405558629632",
+    "symbolId": "BTCUSDT",
+    "baseToken": "BTC",
+    "quoteToken": "USDT",
+    "settleToken": "USDT",
+    "oriType": "LIMIT",
+    "orderType": "LIMIT",
+    "positionSide": "BOTH",
+    "isolated": false,
+    "side": "BUY",
+    "timeInForce": "GTC",
+    "price": "100",
+    "quantity": "1",
+    "closePosition": false,
+    "reduceOnly": false,
+    "executedQuantity": "0",
+    "executedAmount": "0",
+    "lastPriceAtPlace": "0",
+    "markPriceAtPlace": "68925.239999",
+    "triggerType": 0,
+    "triggerPrice": "0",
+    "triggeredTime": 0,
+    "makerFeeRate": "0.0002",
+    "takerFeeRate": "0.0005",
+    "rejectReason": null,
+    "cancelQty": "0",
+    "cancelAmount": "0",
+    "strategyParentId": 0,
+    "tpTriggerType": 0,
+    "tpTriggerPrice": "0",
+    "slTriggerType": 0,
+    "slTriggerPrice": "0",
+    "status": "NEW",
+    "createdAt": 1717467776592,
+    "updatedAt": 1717467777024,
+    "fillPercent": "0",
+    "avgPrice": "0"
+  }
+]
+```
+
+
+
+#### All Orders (USER_DATA)
+
+```shell
+GET /openapi/v1/allOrders (HMAC SHA256)
+```
+
+Get all account orders; active, canceled, or filled.
+
+**Weight:** 5
+
+**Parameters:**
+
+Name | Type | Mandatory | Description
+------------ | ------------ | ------------ | ------------
+symbol | STRING | YES |
+orderId | LONG | NO |
+startTime | LONG | NO | Default: 90 days from current timestamp
+endTime | LONG | NO | Default: present timestamp
+limit | INT | NO | Default 500; max 1000.
+recvWindow | LONG | NO |
+timestamp | LONG | YES |
+
+- Please notice the default startTime and endTime to make sure that time interval is within 0-90 days.
+- If both startTime and endTime are sent, time between startTime and endTime must be less than 90 days.
+  
+**Response:**
+
+```javascript
+[
+  {
+    "userId": null,
+    "clientOrderId": "109f8db5327446e1a0507b2ac4dabfc1",
+    "orderId": "1700637405558629632",
+    "symbolId": "BTCUSDT",
+    "baseToken": "BTC",
+    "quoteToken": "USDT",
+    "settleToken": "USDT",
+    "oriType": "LIMIT",
+    "orderType": "LIMIT",
+    "positionSide": "BOTH",
+    "isolated": false,
+    "side": "BUY",
+    "timeInForce": "GTC",
+    "price": "100",
+    "quantity": "1",
+    "closePosition": false,
+    "reduceOnly": false,
+    "executedQuantity": "0",
+    "executedAmount": "0",
+    "lastPriceAtPlace": "0",
+    "markPriceAtPlace": "68925.239999",
+    "triggerType": 0,
+    "triggerPrice": "0",
+    "triggeredTime": 0,
+    "makerFeeRate": "0.0002",
+    "takerFeeRate": "0.0005",
+    "rejectReason": null,
+    "cancelQty": "0",
+    "cancelAmount": "0",
+    "strategyParentId": 0,
+    "tpTriggerType": 0,
+    "tpTriggerPrice": "0",
+    "slTriggerType": 0,
+    "slTriggerPrice": "0",
+    "status": "NEW",
+    "createdAt": 1717467776592,
+    "updatedAt": 1717467777024,
+    "fillPercent": "0",
+    "avgPrice": "0"
+  }
+]
+```
+
+
+
+#### Current Leverage (USER_DATA)
+
+```shell
+GET /openapi/v1/leverage (HMAC SHA256)
+```
+
+Get user's current leverage information.
+
+**Weight:** 1
+
+**Parameters:**
+
+Name | Type | Mandatory | Description
+------------ | ------------ | ------------ | ------------
+recvWindow | LONG | NO |
+timestamp | LONG | YES |
+  
+**Response:**
+
+```javascript
+[
     {
-        "id": "d_769800519366885376",
-        "amount": "0.001",
-        "coin": "BNB",
-        "network": "BNB",
-        "status": 0,
-        "address": "bnb136ns6lfw4zs5hg4n85vdthaad7hq5m4gtkgf23",
-        "addressTag": "101764890",
-        "txId": "98A3EA560C6B3336D348B6C83F0F95ECE4F1F5919E94BD006E5BF3BF264FACFC",
-        "insertTime": 1661493146000,
-        "confirmNo": 10,
+        "symbol": "ETCUSDT",
+        "crossLeverage": 6,
+        "isolatedLeverage": 6
     },
     {
-        "id": "d_769754833590042625",
-        "amount":"0.5",
-        "coin":"IOTA",
-        "network":"IOTA",
-        "status":1,
-        "address":"SIZ9VLMHWATXKV99LH99CIGFJFUMLEHGWVZVNNZXRJJVWBPHYWPPBOSDORZ9EQSHCZAMPVAPGFYQAUUV9DROOXJLNW",
-        "addressTag":"",
-        "txId":"ESBFVQUTPIWQNJSPXFNHNYHSQNTGKRVKPRABQWTAXCDWOAKDKYWPTVG9BGXNVNKTLEJGESAVXIKIZ9999",
-        "insertTime":1599620082000,
-        "confirmNo": 20,
+        "symbol": "AXSUSDT",
+        "crossLeverage": 2,
+        "isolatedLeverage": 2
+    },
+    {
+        "symbol": "BCHUSDT",
+        "crossLeverage": 3,
+        "isolatedLeverage": 3
+    },
+    {
+        "symbol": "TESUSDT",
+        "crossLeverage": 6,
+        "isolatedLeverage": 6
+    },
+    {
+        "symbol": "LINKUSDT",
+        "crossLeverage": 3,
+        "isolatedLeverage": 3
+    },
+    {
+        "symbol": "BTCUSDT",
+        "crossLeverage": 20,
+        "isolatedLeverage": 5
+    }
+]
+```
+
+
+#### Change Initial Leverage (USER_DATA)
+
+```shell
+POST /openapi/v1/leverage (HMAC SHA256)
+```
+
+Change user's initial leverage of specific symbol market.
+
+**Weight:** 1
+
+**Parameters:**
+
+Name | Type | Mandatory | Description
+------------ | ------------ | ------------ | ------------
+symbol | STRING | YES |
+leverage | INT | YES | target initial leverage: int from 1 to 125.
+isolated | STRING | NO | `true` or `false`, default `false`.
+recvWindow | LONG | NO |
+timestamp | LONG | YES |
+  
+**Response:**
+
+```javascript
+{
+    "leverage": 21,
+    "isolated": "true",
+    "symbol": "BTCUSDT"
+}
+```
+
+
+
+#### Modify Isolated Position Margin (TRADE)
+
+```shell
+POST /openapi/v1/positionMargin (HMAC SHA256)
+```
+
+**Weight:** 1
+
+**Parameters:**
+
+Name | Type | Mandatory | Description
+------------ | ------------ | ------------ | ------------
+symbol | STRING | YES |
+amount | DECIMAL | YES |
+type | INT | YES | 	1: Add position margin，2: Reduce position margin.
+recvWindow | LONG | NO |
+timestamp | LONG | YES |
+
+- Only for isolated symbol
+  
+**Response:**
+
+```javascript
+{
+    "amount": 100.0,
+    "type": 1
+}
+```
+
+
+
+#### User Commission Rate (USER_DATA)
+
+```shell
+GET /openapi/v1/commissionRate (HMAC SHA256)
+```
+
+**Weight:** 20
+
+**Parameters:**
+
+Name | Type | Mandatory | Description
+------------ | ------------ | ------------ | ------------
+symbol | STRING | YES |
+recvWindow | LONG | NO |
+timestamp | LONG | YES |
+  
+**Response:**
+
+```javascript
+{
+    "symbol": "BTCUSDT",
+    "makerCommissionRate": "0.0002",  // 0.02%
+    "takerCommissionRate": "0.0004"   // 0.04%
+}
+```
+
+
+
+#### Futures Account Balance (USER_DATA)
+
+```shell
+GET /openapi/v1/balance (HMAC SHA256)
+```
+
+**Weight:** 5
+
+**Parameters:**
+
+Name | Type | Mandatory | Description
+------------ | ------------ | ------------ | ------------
+recvWindow | LONG | NO |
+timestamp | LONG | YES |
+  
+**Response:**
+
+```javascript
+[
+    {
+        "tokenId": "USDT",
+        "balance": "1193.9402"
     }
 ]
 ```
 
 
 
-#### Withdraw History (USER_DATA)
+#### Account Information (USER_DATA)
 
 ```shell
-GET /openapi/wallet/v1/withdraw/history  (HMAC SHA256)
+GET /openapi/v1/account (HMAC SHA256)
 ```
 
-Fetch withdraw history.
+Get current account information.
 
-**Weight(IP):** 2
+**Weight:** 5
 
 **Parameters:**
 
-| Name       | Type   | Mandatory | Description                                                  |
-| ---------- | ------ | --------- | ------------------------------------------------------------ |
-| coin       | STRING | NO        |                                                              |
-| withdrawOrderId       | STRING | NO      |                                                              |
-| status     | INT    | NO        | 0-PROCESSING, 1-SUCCESS, 2-FAILED |
-| startTime  | LONG   | NO        | Default: 90 days from current timestamp                      |
-| endTime    | LONG   | NO        | Default: present timestamp                                   |
-| offset     | INT    | NO        | Default:0                                                    |
-| limit      | LONG   | NO        | Default:1000, Max:1000                                       |
-| recvWindow | LONG   | NO        |                                                              |
-| timestamp  | LONG   | YES       |                                                              |
-
-* Please notice the default `startTime` and `endTime` to make sure that time interval is within 0-90 days.
-
-* If both `startTime` and `endTime` are sent, time between `startTime` and `endTime` must be less than 90 days.
-
-* If `withdrawOrderId` is sent, time between `startTime` and `endTime` must be less than 7 days.
-
-* If `withdrawOrderId` is sent, `startTime` and `endTime` are not sent, will return last 7 days records by default.
-
-
+Name | Type | Mandatory | Description
+------------ | ------------ | ------------ | ------------
+recvWindow | LONG | NO |
+timestamp | LONG | YES |
+  
 **Response:**
 
 ```javascript
-[
-    {
-        "id": "459890698271244288",
-        "amount": "0.01",
-        "transactionFee": "0",
-        "coin": "ETH",
-        "status": 1,
-        "address": "0x386AE30AE2dA293987B5d51ddD03AEb70b21001F",
-        "addressTag": "",
-        "txId": "0x4ae2fed36a90aada978fc31c38488e8b60d7435cfe0b4daed842456b4771fcf7",
-        "applyTime": 1673601139000,
-        "network": "ETH",
-        "withdrawOrderId": "thomas123",
-        "info": "",
-        "confirmNo": 100
-    },
-    {
-        "id": "451899190746456064",
-        "amount": "0.00063",
-        "transactionFee": "0.00037",
-        "coin": "ETH",
-        "status": 1,
-        "address": "0x386AE30AE2dA293987B5d51ddD03AEb70b21001F",
-        "addressTag": "",
-        "txId": "0x62690ca4f9d6a8868c258e2ce613805af614d9354dda7b39779c57b2e4da0260",
-        "applyTime": 1671695815000,
-        "network": "ETH",
-        "withdrawOrderId": "",
-        "info": "",
-        "confirmNo": 100
-    }
-]
+{
+    "assets": [
+        {
+            "tokenId": "USDT",
+            "balance": "1193.9402",
+            "version": 10
+        }
+    ],
+    "positions": [  // positions of all symbols in the market are returned
+        {
+            "userId": "1697173266836457216",
+            "symbolId": "BTCUSDT",
+            "baseToken": "BTC",
+            "quoteToken": "USDT",
+            "settleToken": "USDT",
+            "avgEntryPrice": "6059.8",
+            "quantity": "5",
+            "curTermRealisedPnl": "0",
+            "isolated": false,
+            "isolatedMargin": "0",
+            "positionSide": "BOTH",
+            "markPrice": "65215.971",
+            "unrealizedProfit": null,
+            "leverage": null,
+            "liquidationPrice": null
+        }
+    ]
+}
 ```
 
 
@@ -1074,8 +1729,43 @@ limit | INT | NO | Default 500; max 1000. if limit <=0 or > 1000 then return 100
     "qty": "12.00000000",
     "quoteQty": "48.000012",
     "time": 1499865549590,
-    "isBuyerMaker": true,
-    "isBestMatch": true
+    "isBuyerMaker": true
+  }
+]
+```
+
+
+
+#### Old Trades Lookup 
+
+```shell
+GET /openapi/quote/v1/historicalTrades
+```
+
+Get older market historical trades.
+Only supports returning data from the last three months.
+
+**Weight:** 20
+
+**Parameters:**
+
+Name | Type | Mandatory | Description
+------------ | ------------ | ------------ | ------------
+symbol | STRING | YES |EXP: BTCUSDT
+limit | INT | NO | Default 500; max 1000. if limit <=0 or > 1000 then return 1000.
+fromId | LONG | NO | TradeId to fetch from. Default gets most recent trades.
+
+**Response:**
+
+```javascript
+[
+  {
+    "id": 28457,
+    "price": "4.00000100",
+    "qty": "12.00000000",
+    "quoteQty": "48.000012",
+    "time": 1499865549590,
+    "isBuyerMaker": true
   }
 ]
 ```
@@ -1124,6 +1814,46 @@ limit | INT | NO | Default 500; max 1000.
   ]
 ]
 ```
+
+
+
+```shell
+GET /openapi/quote/v1/markPriceKlines
+```
+
+Kline/candlestick bars for the mark price of a symbol.
+Klines are uniquely identified by their open time.
+
+**Weight:** 1
+
+**Parameters:**
+
+Name | Type | Mandatory | Description
+------------ | ------------ | ------------ | ------------
+symbol | STRING | YES |EXP: BTCUSDT
+interval | ENUM | YES |
+startTime | LONG | NO |
+endTime | LONG | NO |
+limit | INT | NO | Default 500; max 1000.
+
+* If startTime and endTime are not sent, the most recent klines are returned.
+
+**Response:**
+
+```javascript
+[
+  [
+    1499040000000,      // Open time
+    "0.01634790",       // Open
+    "0.80000000",       // High
+    "0.01575800",       // Low
+    "0.01577100",       // Close
+    1499644799999       // Close time
+  ]
+]
+```
+
+
 
 #### Current average price
 
@@ -1350,12 +2080,13 @@ OR
 ```
 
 
-#### Cryptoasset trading pairs
+ 
+#### Crypto asset trading pairs
 
 ```shell
 GET /openapi/v1/pairs
 ```
-a summary on cryptoasset trading pairs available on the exchange
+A summary on crypto asset trading pairs available on the exchange
 
 **Weight:** 1
 
@@ -1367,650 +2098,33 @@ None
 
 ```javascript
 [
-  {
-    "symbol": "LTCBTC",
-    "quoteToken": "LTC",
-    "baseToken": "BTC"
-  },
-  {
-    "symbol": "BTCUSDT",
-    "quoteToken": "BTC",
-    "baseToken": "USDT"
-  }
-]
-```
-
-
-
-### Spot Trading Endpoints
-
-#### Test new order (TRADE)
-
-```shell
-POST /openapi/v1/order/test (HMAC SHA256)
-```
-
-Test new order creation and signature/recvWindow long.
-Creates and validates a new order but does not send it into the matching engine.
-
-**Weight:** 1
-
-**Parameters:**
-
-Same as `POST /openapi/v1/order`
-
-**Response:**
-
-```javascript
-{}
-```
-
-
-
-#### New order  (TRADE)
-
-```shell
-POST /openapi/v1/order  (HMAC SHA256)
-```
-
-Send in a new order.
-
-**Weight:** 1
-
-**Parameters:**
-
-Name | Type | Mandatory | Description
------------- | ------------ | ------------ | ------------
-symbol | STRING | YES |
-side | ENUM | YES |
-type | ENUM | YES |
-timeInForce | ENUM | NO |
-quantity | DECIMAL | NO |
-quoteOrderQty | DECIMAL | NO |
-price | DECIMAL | NO |
-newClientOrderId | STRING | NO | A unique id among open orders. Automatically generated if not sent. Orders with the same `newClientOrderID` can be accepted only when the previous one is filled, otherwise the order will be rejected.
-stopPrice | DECIMAL | NO | Used with `STOP_LOSS`, `STOP_LOSS_LIMIT`, `TAKE_PROFIT`, and `TAKE_PROFIT_LIMIT` orders.
-newOrderRespType | ENUM | NO | Set the response JSON. `ACK`, `RESULT`, or `FULL`; `MARKET` and `LIMIT` order types default to `FULL`, all other orders default to `ACK`.
-stpFlag | ENUM | NO | The anti self-trading behaviour, Default anti self-dealing behaviour is CB 
-recvWindow | LONG | NO |The value cannot be greater than `60000`
-timestamp | LONG | YES |
-
-Additional mandatory parameters based on `type`:
-
-Type | Additional mandatory parameters                  | Additional Information
------------- |--------------------------------------------------| ------------ 
-`LIMIT` | `quantity`, `price`               |
-`MARKET` | `quantity` or `quoteOrderQty`                    | `MARKET` orders using `quantity` field specifies the amount of the base asset the user wants to buy/sell, E.g. `MARKET` order on BCHUSDT  will specify how much BCH the user is buying/selling. <br />`MARKET` orders using `quoteOrderQty` field specifies the amount of the quote asset the user wants to buy/sell, E.g. `MARKET` order on BCHUSDT  will specify how much USDT the user is buying/selling.<br /> 
-`STOP_LOSS` | `quantity` or `quoteOrderQty`, `stopPrice`       | This will execute a `MARKET` order when`stopPrice` is met. Use `quantity` for selling, `quoteOrderQty` for buying.
-`STOP_LOSS_LIMIT` | `quantity`,  `price`, `stopPrice` | This will execute a `LIMIT` order when`stopPrice` is met.
-`TAKE_PROFIT` | `quantity` or `quoteOrderQty`, `stopPrice`            | This will execute a `MARKET` order when`stopPrice` is met. Use `quantity` for selling, `quoteOrderQty` for buying.
-`TAKE_PROFIT_LIMIT` | `quantity`, `price`, `stopPrice`  | This will execute a `LIMIT` order when`stopPrice` is met.
-`LIMIT_MAKER` | `quantity`, `price`                              | This is a `LIMIT` order that will be rejected if the order immediately matches and trades as a taker.
-
-Trigger order price rules against market price for both MARKET and LIMIT versions:
-
-* Price above market price: `STOP_LOSS/STOP_LOSS_LIMIT` `BUY`, `TAKE_PROFIT/TAKE_PROFIT_LIMIT` `SELL`
-* Price below market price: `STOP_LOSS/STOP_LOSS_LIMIT` `SELL`, `TAKE_PROFIT/TAKE_PROFIT_LIMIT` `BUY`
-
-**Response ACK:**
-
-```javascript
-{
-  "symbol": "BCHUSDT",
-  "orderId": 1202289462787244800,
-  "clientOrderId": "165806007267756",
-  "transactTime": 1656900365976
-}
-```
-
-**Response RESULT:**
-
-```javascript
-{
-    "symbol": "BCHUSDT",
-    "orderId": 1202289462787244800,
-    "clientOrderId": "165806007267756",
-    "transactTime": 1656900365976,
-    "price": "1",
-    "origQty": "101",
-    "executedQty": "101",
-    "cummulativeQuoteQty": "101",
-    "status": "FILLED",
-    "timeInForce": "GTC",
-    "type": "LIMIT",
-    "side": "SELL",
-    "stopPrice": "0",
-    "origQuoteOrderQty": "0"
-}
-```
-**Response FULL:**
-
-```javascript
-{
-    "symbol": "BCHUSDT",
-    "orderId": 1202289462787244800,
-    "clientOrderId": "165806007267756",
-    "transactTime": 1656900365976,
-    "price": "1",
-    "origQty": "101",
-    "executedQty": "101",
-    "cummulativeQuoteQty": "101",
-    "status": "FILLED",
-    "timeInForce": "GTC",
-    "type": "LIMIT",
-    "side": "SELL",
-    "stopPrice": "0",
-    "origQuoteOrderQty": "0"
-    "fills": [
-        {
-            "price": "2",
-            "qty": "100",
-            "commission": "0.01",
-            "commissionAsset": "USDT",
-            "tradeId": "1205027741844507648"
-        },
-        {
-            "price": "1",
-            "qty": "1",
-            "commission": "0.005",
-            "commissionAsset": "USDT",
-            "tradeId": "1205027331347975169"
-        }
-    ]
-}
-```
-
-
-
-#### Query order (USER_DATA)
-
-```shell
-GET /openapi/v1/order (HMAC SHA256)
-```
-
-Check an order's status.
-
-**Weight:** 2
-
-**Parameters:**
-
-Name | Type | Mandatory | Description
------------- | ------------ | ------------ | ------------
-orderId | LONG | NO |
-origClientOrderId | STRING | NO |
-recvWindow | LONG | NO |The value cannot be greater than `60000`
-timestamp | LONG | YES |
-
-Notes:
-
-* Either `orderId` or `origClientOrderId` must be sent. If both parameters are sent, `orderId` takes precedence.
-
-**Response:**
-
-```javascript
-{
-  "symbol": "LTCBTC",
-  "orderId": 1202289462787244800,
-  "clientOrderId": "165806007267756",
-  "price": "0.1",
-  "origQty": "1",
-  "executedQty": "0",
-  "cummulativeQuoteQty": "0",
-  "status": "NEW",
-  "timeInForce": "GTC",
-  "type": "LIMIT",
-  "side": "BUY",
-  "stopPrice": "0",
-  "time": 1499827319559,
-  "updateTime": 1499827319559,
-  "isWorking": true,
-  "origQuoteOrderQty": "0"
-}
-```
-
-
-
-#### Cancel order (TRADE)
-
-```shell
-DELETE /openapi/v1/order  (HMAC SHA256)
-```
-
-Cancel an active order.
-
-**Weight:** 1
-
-**Parameters:**
-
-Name | Type | Mandatory | Description
------------- | ------------ | ------------ | ------------
-orderId | LONG | NO |
-origClientOrderId | STRING | NO |
-recvWindow | LONG | NO |The value cannot be greater than `60000`
-timestamp | LONG | YES |
-
-Notes:
-
-* Either `orderId` or `origClientOrderId` must be sent. If both parameters are sent, `orderId` takes precedence.
-
-**Response:**
-
-```javascript
-{
-  "symbol": "BCHBUSD",
-  "orderId": 1205324142243592448,
-  "clientOrderId": "165830718862761",
-  "price": "2",
-  "origQty": "10",
-  "executedQty": "8",
-  "cummulativeQuoteQty": "16",
-  "status": "CANCELED",
-  "timeInForce": "GTC",
-  "type": "LIMIT",
-  "side": "SELL",
-  "stopPrice": "0",
-  "origQuoteOrderQty": "0"
-}
-```
-
-
-
-#### Cancel All Open Orders on a Symbol (TRADE)
-
-```shell
-DELETE /openapi/v1/openOrders  (HMAC SHA256)
-```
-
-Cancels all active orders on a symbol.
-
-**Weight:** 1
-
-**Parameters:**
-
-| Name       | Type   | Mandatory | Description                              |
-| ---------- | ------ |-----------| ---------------------------------------- |
-| symbol     | STRING | YES       |                                          |
-| recvWindow | LONG   | NO        | The value cannot be greater than `60000` |
-| timestamp  | LONG   | YES       |                                          |
-
-**Response:**
-
-```javascript
-[
     {
-        "symbol": "BTCUSDT",
-        "orderId": 1200757068661824000,
-        "clientOrderId": "165787739706155",
-        "price": "19999",
-        "origQty": "0.01",
-        "executedQty": "0",
-        "cummulativeQuoteQty": "0",
-        "status": "CANCELED",
-        "timeInForce": "GTC",
-        "type": "LIMIT",
-        "side": "BUY",
-        "stopPrice": "0",
-        "origQuoteOrderQty": "0"
+        "symbol": "ETCUSDT",
+        "quoteToken": "USDT",
+        "baseToken": "ETC"
+    },
+    {
+        "symbol": "AXSUSDT",
+        "quoteToken": "USDT",
+        "baseToken": "AXS"
+    },
+    {
+        "symbol": "BCHUSDT",
+        "quoteToken": "USDT",
+        "baseToken": "BCH"
+    },
+    {
+        "symbol": "TESUSDT",
+        "quoteToken": "USDT",
+        "baseToken": "TES"
     },
     {
         "symbol": "BTCUSDT",
-        "orderId": 1200760572449167872,
-        "clientOrderId": "165787781474653",
-        "price": "19999",
-        "origQty": "0.01",
-        "executedQty": "0",
-        "cummulativeQuoteQty": "0",
-        "status": "CANCELED",
-        "timeInForce": "GTC",
-        "type": "LIMIT",
-        "side": "BUY",
-        "stopPrice": "0",
-        "origQuoteOrderQty": "0"
-    },
-    {
-        "symbol": "BTCUSDT",
-        "orderId": 1200760629206489600,
-        "clientOrderId": "165787782151456",
-        "price": "19999",
-        "origQty": "0.01",
-        "executedQty": "0",
-        "cummulativeQuoteQty": "0",
-        "status": "CANCELED",
-        "timeInForce": "GTC",
-        "type": "LIMIT",
-        "side": "BUY",
-        "stopPrice": "0",
-        "origQuoteOrderQty": "0"
+        "quoteToken": "USDT",
+        "baseToken": "BTC"
     }
 ]
 ```
-
-
-
-#### Current open orders (USER_DATA)
-
-```shell
-GET /openapi/v1/openOrders  (HMAC SHA256)
-```
-
-GET all open orders on a symbol. **Careful** when accessing this with no symbol.
-
-**Weight:** 10
-
-**Parameters:**
-
-Name | Type | Mandatory | Description
------------- | ------------ | ------------ | ------------
-symbol | String | NO |
-recvWindow | LONG | NO |The value cannot be greater than `60000`
-timestamp | LONG | YES |
-
-**Response:**
-
-```javascript
-[
-    {
-        "symbol": "BTCUSDT",
-        "orderId": 1200757068661824000,
-        "clientOrderId": "165787739706155",
-        "price": "19999",
-        "origQty": "0.01",
-        "executedQty": "0",
-        "cummulativeQuoteQty": "0",
-        "status": "NEW",
-        "timeInForce": "GTC",
-        "type": "LIMIT",
-        "side": "BUY",
-        "stopPrice": "0",
-        "time": 1657877397079,
-        "updateTime": 1657877397092,
-        "isWorking": true,
-        "origQuoteOrderQty": "0"
-    },
-    {
-        "symbol": "BTCUSDT",
-        "orderId": 1200760572449167872,
-        "clientOrderId": "165787781474653",
-        "price": "19999",
-        "origQty": "0.01",
-        "executedQty": "0",
-        "cummulativeQuoteQty": "0",
-        "status": "NEW",
-        "timeInForce": "GTC",
-        "type": "LIMIT",
-        "side": "BUY",
-        "stopPrice": "0",
-        "time": 1657877814763,
-        "updateTime": 1657877814776,
-        "isWorking": true,
-        "origQuoteOrderQty": "0"
-    },
-    {
-        "symbol": "BTCUSDT",
-        "orderId": 1200760629206489600,
-        "clientOrderId": "165787782151456",
-        "price": "19999",
-        "origQty": "0.01",
-        "executedQty": "0",
-        "cummulativeQuoteQty": "0",
-        "status": "NEW",
-        "timeInForce": "GTC",
-        "type": "LIMIT",
-        "side": "BUY",
-        "stopPrice": "0",
-        "time": 1657877821529,
-        "updateTime": 1657877821542,
-        "isWorking": true,
-        "origQuoteOrderQty": "0"
-    }
-]
-```
-
-
-
-#### History orders (USER_DATA)
-
-```shell
-GET /openapi/v1/historyOrders (HMAC SHA256)
-```
-
-GET all orders of the account;  canceled, filled or rejected.
-
-**Weight:** 10 with symbol, **40** when the symbol parameter is omitted;
-
-**Parameters:**
-
-Name | Type | Mandatory | Description
------------- | ------------ |-----------| ------------
-symbol | String | YES       |
-orderId | LONG | NO        |
-startTime | LONG | NO        |
-endTime | LONG | NO        |
-limit | INT | NO        | Default 500; max 1000.
-recvWindow | LONG | NO        |The value cannot be greater than `60000`
-timestamp | LONG | YES       |
-
-**Notes:**
-
-* If `orderId` is set, it will get orders >= that `orderId`. Otherwise most recent orders are returned.
-
-**Response:**
-
-```javascript
-[
-    {
-        "symbol": "BCHBUSD",
-        "orderId": 1194453962386908672,
-        "clientOrderId": "1657126007990",
-        "price": "4.56",
-        "origQty": "1",
-        "executedQty": "1",
-        "cummulativeQuoteQty": "4.56",
-        "status": "FILLED",
-        "timeInForce": "GTC",
-        "type": "LIMIT",
-        "side": "SELL",
-        "stopPrice": "0",
-        "time": 1657126008273,
-        "updateTime": 1657126008357,
-        "isWorking": false,
-        "origQuoteOrderQty": "0"
-    },
-    {
-        "symbol": "BCHBUSD",
-        "orderId": 1194453774196830976,
-        "clientOrderId": "165712598575253",
-        "price": "0",
-        "origQty": "0",
-        "executedQty": "4",
-        "cummulativeQuoteQty": "18",
-        "status": "FILLED",
-        "timeInForce": "GTC",
-        "type": "MARKET",
-        "side": "BUY",
-        "stopPrice": "0",
-        "time": 1657126008363,
-        "updateTime": 1657126008402,
-        "isWorking": false,
-        "origQuoteOrderQty": "18"
-    },
-    {
-        "symbol": "BCHBUSD",
-        "orderId": 1194460299787314688,
-        "clientOrderId": "1657126763487",
-        "price": "0.46",
-        "origQty": "1",
-        "executedQty": "1",
-        "cummulativeQuoteQty": "4.56",
-        "status": "FILLED",
-        "timeInForce": "GTC",
-        "type": "LIMIT",
-        "side": "SELL",
-        "stopPrice": "0",
-        "time": 1657126763736,
-        "updateTime": 1657126763786,
-        "isWorking": false,
-        "origQuoteOrderQty": "0"
-    }
-]
-```
-
-
-
-#### Account information (USER_DATA)
-
-```shell
-GET /openapi/v1/account (HMAC SHA256)
-```
-
-GET current account information.
-
-**Weight:** 10
-
-**Parameters:**
-
-Name | Type | Mandatory | Description
------------- | ------------ | ------------ | ------------
-recvWindow | LONG | NO |The value cannot be greater than `60000`
-timestamp | LONG | YES |
-
-**Response:**
-
-```javascript
-{
-  "canTrade": true,       
-  "canWithdraw": true,    
-  "canDeposit": true,     
-  "updateTime": 123456789,
-  "accountType": "SPOT",
-  "balances": [
-    {
-      "asset": "BTC",
-      "free": "4723846.89208129",
-      "locked": "0.00000000"
-    },
-    {
-      "asset": "LTC",
-      "free": "4763368.68006011",
-      "locked": "0.00000000"
-    }
-  ],
-  "token": "USD",
-   "daily": {
-      "cashInLimit": "10000",
-      "cashInRemaining": "10000",
-      "cashOutLimit": "0",
-      "cashOutRemaining": "0",
-      "totalWithdrawLimit": "0",
-      "totalWithdrawRemaining": "0"
-   },
-   "monthly": {
-      "cashInLimit": "10000",
-      "cashInRemaining": "10000",
-      "cashOutLimit": "0",
-      "cashOutRemaining": "0",
-      "totalWithdrawLimit": "0",
-      "totalWithdrawRemaining": "0"
-   },
-   "annually": {
-      "cashInLimit": "10000",
-      "cashInRemaining": "10000",
-      "cashOutLimit": "0",
-      "cashOutRemaining": "0",
-      "totalWithdrawLimit": "0",
-      "totalWithdrawRemaining": "0"
-   }
-}
-```
-
-
-
-#### Account trade list (USER_DATA)
-
-```shell
-GET /openapi/v1/myTrades  (HMAC SHA256)
-```
-
-Get trades for a specific account and symbol.
-
-**Weight:** 10
-
-**Parameters:**
-
-Name | Type | Mandatory | Description
------------- | ------------ | ------------ | ------------
-symbol | STRING | YES |
-orderId | LONG | NO | This can only be used in combination with `symbol`.
-startTime | LONG | NO |
-endTime | LONG | NO |
-fromId | LONG | NO | TradeId to fetch from. Default gets most recent trades.
-limit | INT | NO | Default 500; max 1000.
-recvWindow | LONG | NO |The value cannot be greater than `60000`
-timestamp | LONG | YES |
-
-**Notes:**
-
-*  If fromId (tradeId) is set, it will get id (tradeId) >= that fromId (tradeId). Otherwise most recent trades are returned.
-
-**Response:**
-
-```javascript
-[
-  {
-    "symbol": "BNBBTC",
-    "id": 1194460299787317856,
-    "orderId": 1194453774196830977,
-    "price": "4.00000100",
-    "qty": "12.00000000",
-    "quoteQty": "48.000012",
-    "commission": "10.10000000",
-    "commissionAsset": "BNB",
-    "time": 1499865549590,
-    "isBuyer": true,
-    "isMaker": false,
-    "isBestMatch": true
-  }
-]
-```
-
-
-
-#### Trade Fee (USER_DATA)
-
-```shell
-GET /openapi/v1/asset/tradeFee (HMAC SHA256)
-```
-
-Fetch trade fee
-
-**Weight:** 1
-
-**Parameters:**
-
-Name              | Type   | Mandatory | Description
------------------|--------|-----------|--------------------------------------------------------------------------------------
-symbol            | STRING | NO        |
-recvWindow | LONG   | NO        | The value cannot be greater than `60000`
-timestamp          | LONG   | YES        |
-
-**Response:**
-
-```javascript
-  [
-    {
-      "symbol": "BTCUSDT",
-      "makerCommission": "0.002",
-      "takerCommission": "0.003"
-    },
-    {
-      "symbol": "ETHUSDT",
-      "makerCommission": "0.001",
-      "takerCommission": "0.001"
-    }
-  ]
-```
-
-
 
 ### User data stream endpoints
 
@@ -2024,7 +2138,7 @@ Specifics on how user data streams work is in another document(user-data-stream.
 POST /openapi/v1/userDataStream
 ```
 
-Start a new user data stream. The stream will close after 60 minutes unless a keepalive is sent.
+Start a new user data stream. The stream will close after 60 minutes unless a keep alive is sent.
 
 **Weight:** 1
 
@@ -2042,13 +2156,13 @@ None
 
 
 
-#### Keepalive user data stream (USER_STREAM)
+#### Keep alive user data stream (USER_STREAM)
 
 ```shell
 PUT /openapi/v1/userDataStream
 ```
 
-Keepalive a user data stream to prevent a time out. User data streams will close after 60 minutes. It's recommended to send a ping about every 30 minutes.
+Keep alive a user data stream to prevent a time out. User data streams will close after 60 minutes. It's recommended to send a ping about every 30 minutes.
 
 **Weight:** 1
 
@@ -2090,307 +2204,6 @@ listenKey | STRING | YES |
 
 
 
-### Convert endpoints
-
-#### Get supported trading pairs
-```shell
-POST /openapi/convert/v1/get-supported-trading-pairs
-```
-
-This continuously updated endpoint returns a list of all available trading pairs. The response includes information on the minimum and maximum amounts that can be traded for the source currency, as well as the level of precision in decimal places used for the source currency.
-
-**Weight:** 1
-
-**Parameters:**
-
- N/A
-
-
-
-**Response:**
-
-```javascript
-{
-  "status":"Success",
-  "error":"OK",
-  "data":[
-     {
-      "sourceCurrency":"USD",
-      "targetCurrency":"BTC",
-      "minSourceAmount":"1000",
-      "maxSourceAmount":"15000",
-      "precision":"2"
-    },
-    {
-      "sourceCurrency":"BTC",
-      "targetCurrency":"USD",
-      "minSourceAmount":"0.0001",
-      "maxSourceAmount":"0.1",
-      "precision":"8"
-    },
-    {
-      "sourceCurrency":"USD",
-      "targetCurrency":"ETH",
-      "minSourceAmount":"1000",
-      "maxSourceAmount":"18000",
-      "precision":"2"
-    },
-    {
-      "sourceCurrency":"ETH",
-      "targetCurrency":"USD",
-      "minSourceAmount":"0.003",
-      "maxSourceAmount":"4.2",
-      "precision":"8"
-    }
-  ]
-}
-```
-
-
-
-#### Fetch a quote
-
-```shell
-POST /openapi/convert/v1/get-quote
-```
-
-This endpoint returns a quote for a specified source currency (sourceCurrency) and target currency (targetCurrency) pair.
-
-**Weight:** 1
-
-**Parameters:**
-
-Name | Type | Mandatory | Description
------------- | ------------ |-----------| ------------
-sourceCurrency | STRING | YES       |The currency the user holds
-targetCurrency | STRING | YES       |The currency the user would like to obtain
-sourceAmount | STRING | NO        |The amount of sourceCurrency. You only need to fill in either the source amount or the target amount. If both are filled, it will result in an error.
-targetAmount | STRING | NO        |The amount of targetCurrency. You only need to fill in either the source amount or the target amount. If both are filled, it will result in an error.
-
-**Response:**
-
-```javascript
-{
-  "status": 0, 
-  "error": "OK", 
-  "data": {
-            "quoteId": "2182b4fc18ff4556a18332245dba75ea",
-            "sourceCurrency": "BTC",
-            "targetCurrency": "USD",
-            "sourceAmount": "0.1",
-            "price": "59999",             //1BTC=59999USD
-            "targetAmount": "5999",       //The amount of USD the user holds
-            "expiry": "10"
-  }
-}
-```
-
-#### Accept the quote
-
-
-```shell
-POST /openapi/convert/v1/accept-quote
-```
-
-Use this endpoint to accept the quote and receive the result instantly.
-
-**Weight:** 1
-
-**Parameters:**
-
-Name | Type | Mandatory | Description
------------- | ------------ | ------------ | ------------
-quoteId | STRING | YES |The ID assigned to the quote
-
-
-**Response:**
-
-```javascript
-{
-  "status": 0, 
-  "data": {
-         "orderId" : "49d10b74c60a475298c6bbed08dd58fa",
-         "status": "SUCCESS"
-  },
-  "error": "ok"
-}
-```
-
-#### Retrieve order history
-
-
-```shell
-POST /openapi/convert/v1/query-order-history
-```
-This endpoint retrieves order history with the option to define a specific time period using start and end times.
-
-**Weight:** 1
-
-**Parameters:**
-
-Name | Type   | Mandatory | Description
------------- |--------|---------| ------------
-startTime | STRING | No | Numeric string representing milliseconds. The starting point of the required period. If no period is defined, the entire order history is returned.
-endTime | STRING | No |Numeric string representing milliseconds. The end point of the required period. If no period is defined, the entire order history is returned.
-status | STRING | No | deliveryStatus, If this field is available, use it with startTime. `TODO`, `SUCCESS`, `FAILED`, `PROCESSING`
-page | int    | No |
-size | int    | No |
-
-
-**Response:**
-
-```javascript
-{
-  "status": 0,
-   "error": "OK",
-   "data": [
-    {
-      "id":"",
-      "orderId": "25a9b92bcd4d4b2598c8be97bc65b466",
-      "quoteId": "1ecce9a7265a4a329cce80de46e2c583",
-      "userId":"",
-      "sourceCurrency": "BTC",
-      "sourceCurrencyIcon":"",
-      "targetCurrency": "USD",
-      "targetCurrencyIcon":"",
-      "sourceAmount": "0.11",
-      "targetAmount": "4466.89275956",
-      "price": "40608.115996",
-      "status": "SUCCESS",
-      "createdAt": "1671797993000",
-      "errorCode": "",
-      "errorMessage": "",
-      "inversePrice": "3306.115996"
-    }
-  ],
-  "total": 23
-}
-```
-
-#### Query balance (USER_DATA)
-
-```shell
-GET /openapi/account/v3/crypto-accounts
-```
-
-This endpoint allows users to retrieve their current account balance.
-
-**Weight:** 1
-**Parameters:**
-
-Name       | Type  | Mandatory | Description
------------------|--------|-----------|--------------------------------------------
-currency      | STRING | NO    | The currency for which the balance is being queried.
-recvWindow | LONG  | YES    | This value cannot be greater than `60000`
-timestamp     | LONG  | YES    | A point in time for which the balance is being queried.
-
-**Response:**
-```javascript
- {
-  "crypto-accounts": [
-    {
-      "id": "2309rjw0amf0sq9me0gmadsmfoa",
-      "name": "name",
-      "currency": "PBTC",
-      "balance": "100",
-      "pending_balance": "200"
-    }
-  ]
-}
-```
-
-#### Transfers (USER_DATA)
-
-```shell
-POST /openapi/transfer/v3/transfers
-```
-This endpoint is used to transfer funds between two accounts.
-
-**Weight:** 50
-
-**Parameters:**
-
-Name       | Type  | Mandatory | Description
------------------|--------|-----------|--------------------------------------------------------------------------------------
-client_transfer_id | STRING | NO | Client Transfer ID
-account      | STRING | YES    | Either the token (e.g. USD, BTC, ETH) or the Balance ID (e.g. 1447779051242545455) to be transferred.
-target_address   | STRING | YES    | The phone number or email for recipient account (e.g. +63 9686490252 or testsub@gmail.com)
-amount      | BigDecimal | YES    | The amount being transferred
-recvWindow | LONG  | NO    | This value cannot be greater than `60000`
-timestamp     | LONG  | YES    | A point in time when the transfer is performed
-message     | STRING  | NO    | The message sent to the recipient account
-
-**Response:**
-```javascript
-{
-  "transfer":
-    {
-      "id": "2309rjw0amf0sq9me0gmadsmfoa",
-      "status": "success",//status enum: pending,success,failed
-      "account": "90dfg03goamdf02fs",
-      "target_address": "testsub@gmail.com",
-      "amount": "1",
-      "exchange": "1",
-      "payment": "23094j0amd0fmag9agjgasd",
-      "client_transfer_id": "1487573639841995271",
-      "message": "example"
-     }
-}
-```
-
-#### Query transfers (USER_DATA)
-
-```shell
-GET /openapi/transfer/v3/transfers/{id}
-```
-If an ID is provided, this endpoint retrieves an existing transfer record; otherwise, it returns a paginated list of transfers.
-
-**Weight:** 10
-
-**Parameters:**
-
-Name       | Type  | Mandatory | Description
------------------|--------|-----------|--------------------------------------------------------------------------------------
-id      | STRING | NO    | ID of the transfer record
-client_transfer_id| STRING | NO | Client Transfer ID, Maximum length 100
-page    | INT | NO | Current page, default is `1`
-per_page    | INT | NO | Quantity per page, default 2000, maximum `2000`
-from_address |STRING|NO| The phone number or email for sender account (e.g. +63 9686490252 or testsub@gmail.com)
-to_address  |STRING|NO| The phone number or email for recipient account (e.g. +63 9686490252 or testsub@gmail.com)
-recvWindow | LONG  | YES    | This value cannot be greater than `60000`
-timestamp     | LONG  | YES    | A point in time for which transfers are being queried.
-
-- If both the id and client_transfer_id parameters are passed, the id parameter will take precedence.
-- If the client_transfer_id or id parameter is passed, then the client_transfer_id or id takes precedence.
-- The from_address and to_address parameters cannot be passed simultaneously.
-
-**Response:**
-```json
- {
-  "transfers": [
-    {
-      "id": "2309rjw0amf0sq9me0gmadsmfoa",
-      "client_transfer_id": "1487573639841995270",
-      "account": "90dfg03goamdf02fs",
-      "amount": "1",
-      "fee_amount": "0",
-      "currency": "PBTC",
-      "sourceAddress": "test1@gmail.com",
-      "target_address": "test2@gmail.com",
-      "payment": "23094j0amd0fmag9agjgasd",
-      "type": 2,//2:transfer out,1:transfer in
-      "status": "success",
-      "message": "example",
-      "created_at": "2019-07-04T03:28:50.531599Z"
-    }
-  ],
-  "meta": {
-    "total_count": 0,
-    "next_page": 2,
-    "previous_page": 0
-  }
-}
-```
 ## Sub-account endpoints
 
 ### Query Sub-account List (For Master Account)
