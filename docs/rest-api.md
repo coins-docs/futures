@@ -762,7 +762,7 @@ Current exchange trading rules and symbol information
 
 
 
-### Futures Trading Endpoints
+### Futures Trading endpoints
 
 #### Test new order (TRADE)
 
