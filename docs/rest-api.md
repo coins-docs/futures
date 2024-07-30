@@ -1528,7 +1528,7 @@ timestamp | LONG | YES |
 
 ```javascript
 {
-    "amount": 100.0,
+    "amount": "100.0",
     "type": 1
 }
 ```
