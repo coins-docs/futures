@@ -890,7 +890,7 @@ batchOrders | LIST<JSON> | YES | order list. Max 5 orders
 recvWindow | LONG | NO |
 timestamp | LONG | YES |
 
-Where batchOrders is the list of order parameters in JSON, and put batchOrders in request body
+Where batchOrders is the list of order parameters in JSON, recommand to put batchOrders in request body
 
 Name | Type | Mandatory | Description
 ------------ | ------------ | ------------ | ------------
