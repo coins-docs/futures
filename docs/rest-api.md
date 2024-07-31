@@ -975,9 +975,10 @@ Notes:
 
 ```javascript
 {
-    "userId": null,
-    "clientOrderId": "109f8db5327446e1a0507b2ac4dabfc1",
-    "orderId": "1700637405558629632",
+    "userId": "1736306851387821824",
+    "accountId": null,
+    "clientOrderId": "b3d3614bc367485db56c4ea3ce556aeb",
+    "orderId": "1741968833185276416",
     "symbolId": "BTCUSDT",
     "baseToken": "BTC",
     "quoteToken": "USDT",
@@ -988,15 +989,15 @@ Notes:
     "isolated": false,
     "side": "BUY",
     "timeInForce": "GTC",
-    "price": "100",
-    "quantity": "1",
+    "price": "66000",
+    "quantity": "0.01",
     "closePosition": false,
     "reduceOnly": false,
     "executedQuantity": "0",
     "executedAmount": "0",
     "lastPriceAtPlace": "0",
-    "markPriceAtPlace": "68925.239999",
-    "triggerType": 0,
+    "markPriceAtPlace": "66817.36",
+    "triggerType": "LAST_PRICE",
     "triggerPrice": "0",
     "triggeredTime": 0,
     "makerFeeRate": "0.0002",
@@ -1010,10 +1011,13 @@ Notes:
     "slTriggerType": 0,
     "slTriggerPrice": "0",
     "status": "NEW",
-    "createdAt": 1717467776592,
-    "updatedAt": 1717467777024,
+    "triggerCondition": "",
+    "triggerConditions": [],
+    "createdAt": 1722394867018,
+    "updatedAt": 1722394867151,
     "fillPercent": "0",
-    "avgPrice": "0"
+    "avgPrice": "0",
+    "liqType": null
 }
 ```
 
@@ -1228,9 +1232,10 @@ timestamp | LONG | YES |
 
 ```javascript
 {
-    "userId": null,
-    "clientOrderId": "109f8db5327446e1a0507b2ac4dabfc1",
-    "orderId": "1700637405558629632",
+    "userId": "1736306851387821824",
+    "accountId": null,
+    "clientOrderId": "b3d3614bc367485db56c4ea3ce556aeb",
+    "orderId": "1741968833185276416",
     "symbolId": "BTCUSDT",
     "baseToken": "BTC",
     "quoteToken": "USDT",
@@ -1241,15 +1246,15 @@ timestamp | LONG | YES |
     "isolated": false,
     "side": "BUY",
     "timeInForce": "GTC",
-    "price": "100",
-    "quantity": "1",
+    "price": "66000",
+    "quantity": "0.01",
     "closePosition": false,
     "reduceOnly": false,
     "executedQuantity": "0",
     "executedAmount": "0",
     "lastPriceAtPlace": "0",
-    "markPriceAtPlace": "68925.239999",
-    "triggerType": 0,
+    "markPriceAtPlace": "66817.36",
+    "triggerType": "LAST_PRICE",
     "triggerPrice": "0",
     "triggeredTime": 0,
     "makerFeeRate": "0.0002",
@@ -1263,10 +1268,13 @@ timestamp | LONG | YES |
     "slTriggerType": 0,
     "slTriggerPrice": "0",
     "status": "NEW",
-    "createdAt": 1717467776592,
-    "updatedAt": 1717467777024,
+    "triggerCondition": "",
+    "triggerConditions": [],
+    "createdAt": 1722394867018,
+    "updatedAt": 1722394867151,
     "fillPercent": "0",
-    "avgPrice": "0"
+    "avgPrice": "0",
+    "liqType": null
 }
 ```
 
@@ -1297,9 +1305,10 @@ timestamp | LONG | YES |
 ```javascript
 [
   {
-    "userId": null,
-    "clientOrderId": "109f8db5327446e1a0507b2ac4dabfc1",
-    "orderId": "1700637405558629632",
+    "userId": "1736306851387821824",
+    "accountId": null,
+    "clientOrderId": "b3d3614bc367485db56c4ea3ce556aeb",
+    "orderId": "1741968833185276416",
     "symbolId": "BTCUSDT",
     "baseToken": "BTC",
     "quoteToken": "USDT",
@@ -1310,15 +1319,15 @@ timestamp | LONG | YES |
     "isolated": false,
     "side": "BUY",
     "timeInForce": "GTC",
-    "price": "100",
-    "quantity": "1",
+    "price": "66000",
+    "quantity": "0.01",
     "closePosition": false,
     "reduceOnly": false,
     "executedQuantity": "0",
     "executedAmount": "0",
     "lastPriceAtPlace": "0",
-    "markPriceAtPlace": "68925.239999",
-    "triggerType": 0,
+    "markPriceAtPlace": "66817.36",
+    "triggerType": "LAST_PRICE",
     "triggerPrice": "0",
     "triggeredTime": 0,
     "makerFeeRate": "0.0002",
@@ -1332,11 +1341,14 @@ timestamp | LONG | YES |
     "slTriggerType": 0,
     "slTriggerPrice": "0",
     "status": "NEW",
-    "createdAt": 1717467776592,
-    "updatedAt": 1717467777024,
+    "triggerCondition": "",
+    "triggerConditions": [],
+    "createdAt": 1722394867018,
+    "updatedAt": 1722394867151,
     "fillPercent": "0",
-    "avgPrice": "0"
-  }
+    "avgPrice": "0",
+    "liqType": null
+}
 ]
 ```
 
@@ -1372,9 +1384,10 @@ timestamp | LONG | YES |
 ```javascript
 [
   {
-    "userId": null,
-    "clientOrderId": "109f8db5327446e1a0507b2ac4dabfc1",
-    "orderId": "1700637405558629632",
+    "userId": "1736306851387821824",
+    "accountId": null,
+    "clientOrderId": "b3d3614bc367485db56c4ea3ce556aeb",
+    "orderId": "1741968833185276416",
     "symbolId": "BTCUSDT",
     "baseToken": "BTC",
     "quoteToken": "USDT",
@@ -1385,15 +1398,15 @@ timestamp | LONG | YES |
     "isolated": false,
     "side": "BUY",
     "timeInForce": "GTC",
-    "price": "100",
-    "quantity": "1",
+    "price": "66000",
+    "quantity": "0.01",
     "closePosition": false,
     "reduceOnly": false,
     "executedQuantity": "0",
     "executedAmount": "0",
     "lastPriceAtPlace": "0",
-    "markPriceAtPlace": "68925.239999",
-    "triggerType": 0,
+    "markPriceAtPlace": "66817.36",
+    "triggerType": "LAST_PRICE",
     "triggerPrice": "0",
     "triggeredTime": 0,
     "makerFeeRate": "0.0002",
@@ -1407,11 +1420,14 @@ timestamp | LONG | YES |
     "slTriggerType": 0,
     "slTriggerPrice": "0",
     "status": "NEW",
-    "createdAt": 1717467776592,
-    "updatedAt": 1717467777024,
+    "triggerCondition": "",
+    "triggerConditions": [],
+    "createdAt": 1722394867018,
+    "updatedAt": 1722394867151,
     "fillPercent": "0",
-    "avgPrice": "0"
-  }
+    "avgPrice": "0",
+    "liqType": null
+}
 ]
 ```
 
