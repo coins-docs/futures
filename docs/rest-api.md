@@ -1740,6 +1740,8 @@ limit | INT | NO | Default 500; max 1000.
 
 
 
+#### Mark Price Kline/Candlestick Data
+
 ```shell
 GET /openapi/quote/v1/markPriceKlines
 ```
