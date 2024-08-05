@@ -848,27 +848,29 @@ Type | Additional mandatory parameters
 
 ```javascript
 {
-    "orderId": "1700637405558629632",
-    "clientOrderId": "109f8db5327446e1a0507b2ac4dabfc1",
+    "orderId": "1745859647816819712",
+    "clientOrderId": "6201f5cc-3edf-42ea-a6f5-af799f445c60",
     "symbol": "BTCUSDT",
     "type": "LIMIT",
     "positionSide": "BOTH",
     "timeInForce": "GTC",
     "side": "BUY",
     "isolated": false,
-    "origQty": "1.000000",
-    "price": "100.000000",
-    "executedQty": "0.000000",
-    "activatePrice": null,
-    "priceRate": null,
-    "triggerPrice": "0.000000",
-    "triggerType": "LAST_PRICE",
+    "origQty": "0.10000000",
+    "price": "67000.00000000",
+    "executedQty": "0.10000000",
     "tpTriggerType": "LAST_PRICE",
     "tpTriggerPrice": "",
     "slTriggerType": "LAST_PRICE",
     "slTriggerPrice": "",
-    "strategyParentId": "0",
-    "status": "NEW"
+    "status": "NEW",
+    "cumQuote": "5136.81520000",
+    "avgPrice": "0",
+    "stopPrice": "0.00000000",
+    "closePosition": false,
+    "origType": "LIMIT",
+    "updateTime": "1722858688271469674",
+    "workingType": "LAST_PRICE"
 }
 ```
 
@@ -916,29 +918,31 @@ newOrderRespType | ENUM | NO | `ACK` or `RESULT`, default `ACK`.
 
 ```javascript
 [
-  {
-    "orderId": "1700637405558629632",
-    "clientOrderId": "109f8db5327446e1a0507b2ac4dabfc1",
-    "symbol": "BTCUSDT",
-    "type": "LIMIT",
-    "positionSide": "BOTH",
-    "timeInForce": "GTC",
-    "side": "BUY",
-    "isolated": false,
-    "origQty": "1.000000",
-    "price": "100.000000",
-    "executedQty": "0.000000",
-    "activatePrice": null,
-    "priceRate": null,
-    "triggerPrice": "0.000000",
-    "triggerType": "LAST_PRICE",
-    "tpTriggerType": "LAST_PRICE",
-    "tpTriggerPrice": "",
-    "slTriggerType": "LAST_PRICE",
-    "slTriggerPrice": "",
-    "strategyParentId": "0",
-    "status": "NEW"
-  }
+    {
+        "orderId": "1745859647816819712",
+        "clientOrderId": "6201f5cc-3edf-42ea-a6f5-af799f445c60",
+        "symbol": "BTCUSDT",
+        "type": "LIMIT",
+        "positionSide": "BOTH",
+        "timeInForce": "GTC",
+        "side": "BUY",
+        "isolated": false,
+        "origQty": "0.10000000",
+        "price": "67000.00000000",
+        "executedQty": "0.10000000",
+        "tpTriggerType": "LAST_PRICE",
+        "tpTriggerPrice": "",
+        "slTriggerType": "LAST_PRICE",
+        "slTriggerPrice": "",
+        "status": "NEW",
+        "cumQuote": "5136.81520000",
+        "avgPrice": "0",
+        "stopPrice": "0.00000000",
+        "closePosition": false,
+        "origType": "LIMIT",
+        "updateTime": "1722858688271469674",
+        "workingType": "LAST_PRICE"
+    }
 ]
 ```
 
