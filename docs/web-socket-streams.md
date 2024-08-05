@@ -11,7 +11,7 @@ layout: default
 # General WSS information
 * The base endpoint is: **ws-fapi.coins.xyz**
 * Streams can be accessed either in a single raw stream or in a combined stream
-* Raw streams are accessed at **/openapi/quote/ws/v3/\<streamName\>**
+* Raw streams are accessed at **/openapi/quote/ws/v1/\<streamName\>**
 * Combined streams are accessed at **/openapi/quote/stream?streams=\<streamName1\>/\<streamName2\>/\<streamName3\>**
 * Combined stream events are wrapped as follows: **{"stream":"\<streamName\>","data":\<rawPayload\>}**
 * All symbols for streams are **lowercase**
