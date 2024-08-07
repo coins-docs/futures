@@ -1064,29 +1064,7 @@ timestamp | LONG | YES |
 **Response:**
 
 ```javascript
-[
-  {
-    "orderId": "1745859647816819712",
-    "clientOrderId": "6201f5cc-3edf-42ea-a6f5-af799f445c60",
-    "symbol": "BTCUSDT",
-    "type": "LIMIT",
-    "positionSide": "BOTH",
-    "timeInForce": "GTC",
-    "side": "BUY",
-    "isolated": false,
-    "origQty": "0.10000000",
-    "price": "67000.00000000",
-    "executedQty": "0.10000000",
-    "status": "NEW",
-    "cumQuote": "5136.81520000",
-    "avgPrice": "0",
-    "stopPrice": "0.00000000",
-    "closePosition": false,
-    "origType": "LIMIT",
-    "updateTime": "1722858688271469674",
-    "workingType": "LAST_PRICE"
-  }
-]
+The operation of cancel all open order is done.
 ```
 
 
