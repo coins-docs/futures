@@ -1064,7 +1064,10 @@ timestamp | LONG | YES |
 **Response:**
 
 ```javascript
-The operation of cancel all open order is done.
+{
+    "code": 200,
+    "msg": "The operation of cancel all open order is done."
+}
 ```
 
 
@@ -1113,6 +1116,10 @@ timestamp | LONG | YES |
     "origType": "LIMIT",
     "updateTime": "1722858688271469674",
     "workingType": "LAST_PRICE"
+  }
+  {
+    "code": -1136,
+    "msg": "Unknown order sent."
   }
 ]
 ```
