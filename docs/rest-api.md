@@ -950,8 +950,8 @@ Check an order's status.
 
 **Weight:** 1
 
-- These orders will not be found :
-     - order status is CANCELED or EXPIRED AND order has NO filled trade AND created time + 3 days < current time
+- These orders will not be found:
+     - order status is `CANCELED` or `EXPIRED` AND order has NO filled trade AND created time + 3 days < current time
      - order create time + 90 days < current time
 
 **Parameters:**
@@ -1265,6 +1265,10 @@ GET /openapi/v1/allOrders (HMAC SHA256)
 
 Get all account orders; active, canceled, or filled.
 
+- These orders will not be found:
+     - order status is `CANCELED` or `EXPIRED` AND order has NO filled trade AND created time + 3 days < current time
+     - order create time + 90 days < current time
+
 **Weight:** 5
 
 **Parameters:**
@@ -1279,9 +1283,10 @@ limit | INT | NO | Default 500; max 1000.
 recvWindow | LONG | NO |
 timestamp | LONG | YES |
 
-- Please notice the default startTime and endTime to make sure that time interval is within 0-90 days.
-- If both startTime and endTime are sent, time between startTime and endTime must be less than 90 days.
-  
+Notes:
+- If `orderId` is set, it will get orders >= that `orderId`. Otherwise most recent orders are returned.
+- The query time period must be less then 7 days( default as the recent 7 days).
+
 **Response:**
 
 ```javascript
