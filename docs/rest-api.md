@@ -1284,8 +1284,8 @@ Name | Type | Mandatory | Description
 ------------ | ------------ | ------------ | ------------
 symbol | STRING | YES |
 orderId | LONG | NO |
-startTime | LONG | NO | Default: 90 days from current timestamp
-endTime | LONG | NO | Default: present timestamp
+startTime | LONG | NO |
+endTime | LONG | NO |
 limit | INT | NO | Default 500; max 1000.
 recvWindow | LONG | NO |
 timestamp | LONG | YES |
