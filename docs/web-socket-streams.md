@@ -216,8 +216,7 @@ m -> minutes; h -> hours; d -> days; w -> weeks; M -> months
     "x": false,     // Is this kline closed?
     "q": "1.0000",  // Quote asset volume
     "V": "500",     // Taker buy base asset volume
-    "Q": "0.500",   // Taker buy quote asset volume
-    "B": "123456"   // Ignore
+    "Q": "0.500"    // Taker buy quote asset volume
   }
 }
 ```
