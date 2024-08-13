@@ -209,7 +209,7 @@ When new order created, order status changed will push such event. event type is
         "t": 1715282533938061568,                // Trade Id
         "m": false,                              // Is this trade the maker side?
         "r": ""                                  // Order reject reason
-        "b": "USDT"                                  // Base token
+        "b": "USDT"                              // Base token
     }
 }
 ```
