@@ -1523,27 +1523,27 @@ timestamp | LONG | YES |
     "assets": [
         {
             "tokenId": "USDT",
-            "balance": "1193.9402",
-            "version": 10
+            "balance": "179650.24408109"
         }
     ],
-    "positions": [  // positions of all symbols in the market are returned
+    "positions": [
         {
-            "userId": "1697173266836457216",
+            "userId": "1736306851387821824",
             "symbolId": "BTCUSDT",
             "baseToken": "BTC",
             "quoteToken": "USDT",
             "settleToken": "USDT",
-            "avgEntryPrice": "6059.8",
-            "quantity": "5",
-            "curTermRealisedPnl": "0",
+            "avgEntryPrice": "7185.09030506",
+            "quantity": "7.51",
+            "curTermRealisedPnl": "75879.60967182",
             "isolated": false,
             "isolatedMargin": "0",
             "positionSide": "BOTH",
-            "markPrice": "65215.971",
-            "unrealizedProfit": null,
-            "leverage": null,
-            "liquidationPrice": null
+            "markPrice": "60951.2",
+            "unrealizedProfit": "403783.4838089994",
+            "leverage": 25,
+            "liquidationPrice": "-16218.29",
+            "curTermFirstOrderTime": 1722322927708306515
         }
     ]
 }
