@@ -889,7 +889,9 @@ batchOrders | LIST<JSON> | YES | order list. Max 5 orders
 recvWindow | LONG | NO |
 timestamp | LONG | YES |
 
-Where batchOrders is the list of order parameters in JSON, recommand to put batchOrders in request body
+Where batchOrders is the list of order parameters in JSON
+- Example: /openapi/v1/batchOrders?batchOrders=[{"type":"LIMIT","timeInForce":"GTC",
+"symbol":"BTCUSDT","side":"BUY","price":"10001","quantity":"0.001"}]
 
 Name | Type | Mandatory | Description
 ------------ | ------------ | ------------ | ------------
