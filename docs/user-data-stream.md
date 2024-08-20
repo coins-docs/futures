@@ -208,8 +208,12 @@ When new order created, order status changed will push such event. event type is
         "T": 1719213612249,                      // Order Trade Time
         "t": 1715282533938061568,                // Trade Id
         "m": false,                              // Is this trade the maker side?
-        "r": ""                                  // Order reject reason
-        "b": "USDT"                              // Base token
+        "R": false,                              // Is this trade reduce only?
+        "ps": "BOTH",                            // Position Side
+        "wt": "LAST_PRICE",                      // Trigger Price Type
+        "ot": "MARKET",                          // Original Type
+        "cp": false,                             // Is this trade the trigger close order?
+        "V": "CB"                                // Self transaction protect mode
     }
 }
 ```
