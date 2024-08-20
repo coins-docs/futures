@@ -132,7 +132,7 @@ Event type is `ACCOUNT_UPDATE`.
                 "mt": "cross",                  // Margin Type
                 "iw": 0E-18,                    // Isolated Wallet (if isolated position)
                 "ps": "BOTH",                   // Position Side
-                "ma": "USDT",                   // Asset
+                "ma": "USDT"                    // Asset
             }
         ]
     }
