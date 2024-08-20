@@ -129,9 +129,10 @@ Event type is `ACCOUNT_UPDATE`.
                 "bep": 6061.058778824424000000, // breakeven price
                 "cr": 0E-18,                    // (Pre-fee) Accumulated Realized
                 "up": 0,                        // Unrealized PnL
-                "mt": "CROSSED",                // Margin Type
+                "mt": "cross",                  // Margin Type
                 "iw": 0E-18,                    // Isolated Wallet (if isolated position)
-                "ps": "BOTH"                    // Position Side
+                "ps": "BOTH",                   // Position Side
+                "ma": "USDT",                   // Asset
             }
         ]
     }
