@@ -309,6 +309,7 @@ Status | Description
 `GTC` | Good Til Canceled <br> An order will be on the book unless the order is canceled.
 `IOC` | Immediate Or Cancel <br> An order will try to fill the order as much as it can before the order expires.
 `FOK`| Fill or Kill <br> An order will expire if the full order cannot be filled upon execution.
+`POST_ONLY`| Good Till Crossing (Post Only)
 
 **Kline/Candlestick chart intervals:**
 
