@@ -200,14 +200,14 @@ When new order created, order status changed will push such event. event type is
         "sp": "0.000000000000000000",            // Stop Price. Please ignore with TRAILING_STOP_MARKET order
         "x": "TRADE",                            // Execution Type
         "X": "FILLED",                           // Order Status
-        "i": 1715282533938061568,                // Order Id
+        "i": "1715282533938061568",              // Order Id
         "l": "0.000100000000000000",             // Order Last Filled Quantity
         "L": "69000.000000000000000000",         // Last Filled Price
         "z": "0.000100000000000000",             // Order Filled Accumulated Quantity
         "N": "USDT",                             // Commission Asset, will not push if no commission
         "n": "-0.003450000000000000",            // Commission, will not push if no commission
         "T": 1719213612249,                      // Order Trade Time
-        "t": 1715282533938061568,                // Trade Id
+        "t": "1715282533938061568",              // Trade Id
         "m": false,                              // Is this trade the maker side?
         "R": false,                              // Is this trade reduce only?
         "ps": "BOTH",                            // Position Side
